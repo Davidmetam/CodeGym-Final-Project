@@ -27,8 +27,8 @@ spring:
         jdbc.batch_size: 20
   datasource:
     url: jdbc:postgresql://localhost:5432/jira
-    username: jira
-    password: JiraRush
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
 
   liquibase:
     changeLog: "classpath:db/changelog.sql"
@@ -51,19 +51,19 @@ spring:
       client:
         registration:
           github:
-            client-id: Ov23lixZ3fZs8lK1Favs
-            client-secret: 082593c10c56c20ef971674e01b1888cad11d5cf
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
             scope:
               - email
           google:
-            client-id: 402741404180-p4869n0mc6q8asg0pou45lbejc89pvin.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
               - profile
           gitlab:
-            client-id: de8dd2c629a08481d935e519ae4636634e97d74c1cab7fcbcb47e920e1ac1965
-            client-secret: gloas-74923caa0ca5708d7b3761335c6043cb5343ae1ee2a9da3dba9539183710cf20
+            client-id: ${GITLAB_CLIENT_ID}
+            client-secret: ${GITLAB_CLIENT_SECRET}
             client-name: GitLab
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
@@ -86,10 +86,11 @@ spring:
           starttls:
             enable: true
           auth: true
-    host: smtp.gmail.com
-    username: cgjirafinal@gmail.com
-    password: YJMN4dJg8Lmo
-    port: 587
+    host: ${SMTP_MAIL_SERVER}
+    username: ${SMTP_MAIL_ACCOUNT}
+    password: ${SMTP_MAIL_PASSWORD}
+    port: ${SMTP_MAIL_PORT}
+
   thymeleaf.check-template-location: false
 
   mvc.throw-exception-if-no-handler-found: true
