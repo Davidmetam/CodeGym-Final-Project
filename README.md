@@ -26,4 +26,7 @@
 - https://www.youtube.com/watch?v=aEW8ZH6wj2o
 
 List of completed tasks:
-...
+- Delete Facebook as Social Network
+- Place sensitive information as placeholders. They can be read from machine's environment variables when the server starts
+- Write tests for all public methods of the controller ProfileRestController
+- Refactor method upload from FileUtil so it uses a modern approach to working with the file system
