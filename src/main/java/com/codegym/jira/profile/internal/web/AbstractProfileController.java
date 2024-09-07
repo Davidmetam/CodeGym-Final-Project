@@ -29,4 +29,5 @@ public abstract class AbstractProfileController {
         Profile profile = profileMapper.updateFromTo(profileRepository.getOrCreate(profileTo.id()), profileTo);
         profileRepository.save(profile);
     }
+
 }

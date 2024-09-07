@@ -1,8 +1,23 @@
 spring.cache.type: none
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
   init:
     mode: always
   datasource:
-    url: jdbc:postgresql://localhost:5433/jira-test
+    url: jdbc:postgresql://localhost:5433/postgres
     username: jira
     password: JiraRush
+
+    mail:
+      properties:
+        mail:
+          smtp:
+            starttls:
+              enable: true
+            auth: true
+      host: ${SMTP_MAIL_SERVER}
+      username: ${SMTP_MAIL_ACCOUNT}
+      password: ${SMTP_MAIL_PASSWORD}
+      port: ${SMTP_MAIL_PORT}
