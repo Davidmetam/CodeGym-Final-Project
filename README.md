@@ -30,3 +30,4 @@ List of completed tasks:
 - Place sensitive information as placeholders. They can be read from machine's environment variables when the server starts
 - Write tests for all public methods of the controller ProfileRestController
 - Refactor method upload from FileUtil so it uses a modern approach to working with the file system
+- Add Tags to Tasks (Entity and Controller, Service and Repository layers) only back-end
