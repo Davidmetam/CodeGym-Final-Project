@@ -1,0 +1,22 @@
+services:
+  postgres_db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=JiraRush
+  postgres_db_test:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=JiraRush
+  jira:
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - postgres_db
+      - postgres_db_test
