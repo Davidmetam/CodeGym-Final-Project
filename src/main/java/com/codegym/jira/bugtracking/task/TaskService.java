@@ -137,4 +137,8 @@ public class TaskService {
             throw new DataConflictException(String.format(assign ? CANNOT_ASSIGN : CANNOT_UN_ASSIGN, userType, task.getStatusCode()));
         }
     }
+
+    public Task findById(Long taskId) {
+        return Util.checkExist(taskId, handler.getRepository().findById(taskId));
+    }
 }

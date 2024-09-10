@@ -7,15 +7,14 @@ import com.codegym.jira.bugtracking.project.Project;
 import com.codegym.jira.bugtracking.sprint.Sprint;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.codegym.jira.bugtracking.task.TaskUtil.checkStatusChangePossible;
 
@@ -61,14 +60,8 @@ public class Task extends TitleEntity implements HasCode {
     @Column(name = "sprint_id")
     private Long sprintId;
 
-    @CollectionTable(name = "task_tag",
-            joinColumns = @JoinColumn(name = "task_id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"task_id", "tag"}, name = "uk_task_tag"))
-    @Column(name = "tag")
-    @ElementCollection(fetch = FetchType.LAZY)
-    @JoinColumn()
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<@Size(min = 2, max = 32) String> tags = Set.of();
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskTag> taskTags = new ArrayList<>();
 
     //  history of comments and task fields changing
     @OneToMany(mappedBy = "taskId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -13,6 +13,9 @@ public interface TaskRepository extends BaseRepository<Task> {
     @Query("SELECT t FROM Task t WHERE t.sprintId =:sprintId ORDER BY t.startpoint DESC")
     List<Task> findAllBySprintId(long sprintId);
 
+    @Query("SELECT t From Task t WHERE t.id =:Id")
+    Optional<Task> findById(Long Id);
+
     @Query("SELECT t FROM Task t WHERE t.projectId =:projectId AND t.sprintId IS NULL")
     List<Task> findAllByProjectIdAndSprintIsNull(long projectId);
 
