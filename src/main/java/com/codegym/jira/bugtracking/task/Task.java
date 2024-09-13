@@ -13,6 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,15 @@ public class Task extends TitleEntity implements HasCode {
     //  history of comments and task fields changing
     @OneToMany(mappedBy = "taskId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activity> activities;
+
+    @Column(name = "in_progress")
+    private LocalDateTime inProgress;
+
+    @Column(name = "ready_for_review")
+    private LocalDateTime readyForReview;
+
+    @Column(name = "done")
+    private LocalDateTime done;
 
     public Task(Long id, String title, String typeCode, String statusCode, Long parentId, long projectId, Long sprintId) {
         super(id, title);

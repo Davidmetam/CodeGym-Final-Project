@@ -17,15 +17,18 @@ import com.codegym.jira.bugtracking.sprint.SprintRepository;
 import com.codegym.jira.bugtracking.task.to.TaskToExt;
 import com.codegym.jira.bugtracking.task.to.TaskToFull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskService {
     static final String CANNOT_ASSIGN = "Cannot assign as %s to task with status=%s";
     static final String CANNOT_UN_ASSIGN = "Cannot unassign as %s from task with status=%s";
@@ -43,6 +46,20 @@ public class TaskService {
         Task task = handler.getRepository().getExisted(taskId);
         if (!statusCode.equals(task.getStatusCode())) {
             task.checkAndSetStatusCode(statusCode);
+            switch (task.getStatusCode()) {
+                case "in_progress" -> task.setInProgress(LocalDateTime.now());
+                case "ready_for_review" -> task.setReadyForReview(LocalDateTime.now());
+                case "done" -> task.setDone(LocalDateTime.now());
+            }
+            handler.getRepository().save(task);
+            Duration timeInProgress = getTimeInProgress(task);
+            Duration timeInReview = getTimeUnderTesting(task);
+            if (timeInProgress != Duration.ZERO){
+                log.info("Time in progress for task Id: {} is {} ", taskId, timeInProgress);
+            }
+            if (timeInReview != Duration.ZERO){
+                log.info("Time in review for task Id: {} is {} ", taskId, timeInReview);
+            }
             Activity statusChangedActivity = new Activity(null, taskId, AuthUser.authId());
             statusChangedActivity.setStatusCode(statusCode);
             activityHandler.create(statusChangedActivity);
@@ -141,4 +158,19 @@ public class TaskService {
     public Task findById(Long taskId) {
         return Util.checkExist(taskId, handler.getRepository().findById(taskId));
     }
+
+    public Duration getTimeInProgress(Task task) {
+        if (task.getInProgress() != null && task.getReadyForReview() != null) {
+            return Duration.between(task.getInProgress(), task.getReadyForReview());
+        }
+        return Duration.ZERO;
+    }
+
+    public Duration getTimeUnderTesting(Task task) {
+        if (task.getReadyForReview() != null && task.getDone() != null) {
+            return Duration.between(task.getReadyForReview(), task.getDone());
+        }
+        return Duration.ZERO;
+    }
+
 }

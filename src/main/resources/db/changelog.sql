@@ -4,37 +4,37 @@ DROP TABLE IF EXISTS USER_ROLE;
 DROP TABLE IF EXISTS CONTACT;
 DROP TABLE IF EXISTS MAIL_CASE;
 DROP
-SEQUENCE IF EXISTS MAIL_CASE_ID_SEQ;
+    SEQUENCE IF EXISTS MAIL_CASE_ID_SEQ;
 DROP TABLE IF EXISTS PROFILE;
 DROP TABLE IF EXISTS TASK_TAG;
 DROP TABLE IF EXISTS USER_BELONG;
 DROP
-SEQUENCE IF EXISTS USER_BELONG_ID_SEQ;
+    SEQUENCE IF EXISTS USER_BELONG_ID_SEQ;
 DROP TABLE IF EXISTS ACTIVITY;
 DROP
-SEQUENCE IF EXISTS ACTIVITY_ID_SEQ;
+    SEQUENCE IF EXISTS ACTIVITY_ID_SEQ;
 DROP TABLE IF EXISTS TASK;
 DROP
-SEQUENCE IF EXISTS TASK_ID_SEQ;
+    SEQUENCE IF EXISTS TASK_ID_SEQ;
 DROP TABLE IF EXISTS SPRINT;
 DROP
-SEQUENCE IF EXISTS SPRINT_ID_SEQ;
+    SEQUENCE IF EXISTS SPRINT_ID_SEQ;
 DROP TABLE IF EXISTS PROJECT;
 DROP
-SEQUENCE IF EXISTS PROJECT_ID_SEQ;
+    SEQUENCE IF EXISTS PROJECT_ID_SEQ;
 DROP TABLE IF EXISTS REFERENCE;
 DROP
-SEQUENCE IF EXISTS REFERENCE_ID_SEQ;
+    SEQUENCE IF EXISTS REFERENCE_ID_SEQ;
 DROP TABLE IF EXISTS ATTACHMENT;
 DROP
-SEQUENCE IF EXISTS ATTACHMENT_ID_SEQ;
+    SEQUENCE IF EXISTS ATTACHMENT_ID_SEQ;
 DROP TABLE IF EXISTS USERS;
 DROP
-SEQUENCE IF EXISTS USERS_ID_SEQ;
+    SEQUENCE IF EXISTS USERS_ID_SEQ;
 
 create table PROJECT
 (
-    ID bigserial primary key,
+    ID          bigserial primary key,
     CODE        varchar(32)   not null
         constraint UK_PROJECT_CODE unique,
     TITLE       varchar(1024) not null,
@@ -48,7 +48,7 @@ create table PROJECT
 
 create table MAIL_CASE
 (
-    ID bigserial primary key,
+    ID        bigserial primary key,
     EMAIL     varchar(255) not null,
     NAME      varchar(255) not null,
     DATE_TIME timestamp    not null,
@@ -58,7 +58,7 @@ create table MAIL_CASE
 
 create table SPRINT
 (
-    ID bigserial primary key,
+    ID          bigserial primary key,
     STATUS_CODE varchar(32)   not null,
     STARTPOINT  timestamp,
     ENDPOINT    timestamp,
@@ -69,7 +69,7 @@ create table SPRINT
 
 create table REFERENCE
 (
-    ID bigserial primary key,
+    ID         bigserial primary key,
     CODE       varchar(32)   not null,
     REF_TYPE   smallint      not null,
     ENDPOINT   timestamp,
@@ -81,7 +81,7 @@ create table REFERENCE
 
 create table USERS
 (
-    ID bigserial primary key,
+    ID           bigserial primary key,
     DISPLAY_NAME varchar(32)  not null
         constraint UK_USERS_DISPLAY_NAME unique,
     EMAIL        varchar(128) not null
@@ -113,19 +113,22 @@ create table CONTACT
 
 create table TASK
 (
-    ID bigserial primary key,
-    TITLE         varchar(1024) not null,
-    DESCRIPTION   varchar(4096) not null,
-    TYPE_CODE     varchar(32)   not null,
-    STATUS_CODE   varchar(32)   not null,
-    PRIORITY_CODE varchar(32)   not null,
-    ESTIMATE      integer,
-    UPDATED       timestamp,
-    PROJECT_ID    bigint        not null,
-    SPRINT_ID     bigint,
-    PARENT_ID     bigint,
-    STARTPOINT    timestamp,
-    ENDPOINT      timestamp,
+    ID               bigserial primary key,
+    TITLE            varchar(1024) not null,
+    DESCRIPTION      varchar(4096) not null,
+    TYPE_CODE        varchar(32)   not null,
+    STATUS_CODE      varchar(32)   not null,
+    PRIORITY_CODE    varchar(32)   not null,
+    ESTIMATE         integer,
+    UPDATED          timestamp,
+    PROJECT_ID       bigint        not null,
+    SPRINT_ID        bigint,
+    PARENT_ID        bigint,
+    STARTPOINT       timestamp,
+    ENDPOINT         timestamp,
+    IN_PROGRESS      timestamp,
+    READY_FOR_REVIEW timestamp,
+    DONE             timestamp,
     constraint FK_TASK_SPRINT foreign key (SPRINT_ID) references SPRINT (ID) on delete set null,
     constraint FK_TASK_PROJECT foreign key (PROJECT_ID) references PROJECT (ID) on delete cascade,
     constraint FK_TASK_PARENT_TASK foreign key (PARENT_ID) references TASK (ID) on delete cascade
@@ -133,7 +136,7 @@ create table TASK
 
 create table ACTIVITY
 (
-    ID bigserial primary key,
+    ID            bigserial primary key,
     AUTHOR_ID     bigint not null,
     TASK_ID       bigint not null,
     UPDATED       timestamp,
@@ -150,6 +153,7 @@ create table ACTIVITY
 
 create table TASK_TAG
 (
+    ID      bigint primary key,
     TASK_ID bigint      not null,
     TAG     varchar(32) not null,
     constraint UK_TASK_TAG unique (TASK_ID, TAG),
@@ -158,7 +162,7 @@ create table TASK_TAG
 
 create table USER_BELONG
 (
-    ID bigserial primary key,
+    ID             bigserial primary key,
     OBJECT_ID      bigint      not null,
     OBJECT_TYPE    smallint    not null,
     USER_ID        bigint      not null,
@@ -172,7 +176,7 @@ create index IX_USER_BELONG_USER_ID on USER_BELONG (USER_ID);
 
 create table ATTACHMENT
 (
-    ID bigserial primary key,
+    ID          bigserial primary key,
     NAME        varchar(128)  not null,
     FILE_LINK   varchar(2048) not null,
     OBJECT_ID   bigint        not null,
@@ -242,9 +246,10 @@ values ('assigned', 'Assigned', 6, '1'),
        ('done', 'Done', 3, 'canceled'),
        ('canceled', 'Canceled', 3, null);
 
-alter table SPRINT rename COLUMN TITLE to CODE;
 alter table SPRINT
-    alter column CODE type varchar (32);
+    rename COLUMN TITLE to CODE;
+alter table SPRINT
+    alter column CODE type varchar(32);
 alter table SPRINT
     alter column CODE set not null;
 create unique index UK_SPRINT_PROJECT_CODE on SPRINT (PROJECT_ID, CODE);
