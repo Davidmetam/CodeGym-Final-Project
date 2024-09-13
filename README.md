@@ -27,7 +27,9 @@
 
 List of completed tasks:
 - Delete Facebook as Social Network
-- Place sensitive information as placeholders. They can be read from machine's environment variables when the server starts
+- Place sensitive information as placeholders. They can be read from machine's environment variables when the server starts, Also created a .env file for docker
 - Write tests for all public methods of the controller ProfileRestController
 - Refactor method upload from FileUtil so it uses a modern approach to working with the file system
 - Add Tags to Tasks (Entity and Controller, Service and Repository layers) only back-end
+- Add Dockerfile
+- Add docker-compose
