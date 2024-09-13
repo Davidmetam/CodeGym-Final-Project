@@ -33,3 +33,4 @@ List of completed tasks:
 - Add Tags to Tasks (Entity and Controller, Service and Repository layers) only back-end
 - Add Dockerfile
 - Add docker-compose
+- Add task time in progress and task time ready for review at service layer
